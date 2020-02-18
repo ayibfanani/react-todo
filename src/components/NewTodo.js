@@ -12,9 +12,6 @@ class Filter extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      todo: ''
-    }
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
@@ -23,20 +20,29 @@ class Filter extends Component {
     const val = e.target.value;
 
     if (e.key === 'Enter' && val.length > 0) {
-      this.props.storeTodo(val)
-
-      this.setState({ todo: '' })
+      if (this.props.todo.key !== undefined && this.props.todo.key !== null) {
+        this.props.updateTodo(this.props.todo.key, { title: val, status: this.props.todo.status })
+      } else {
+        this.props.storeTodo({ title: val, status: 0 })
+      }
+      
+      let todo = this.props.todo
+      todo['title'] = ''
+      delete todo['key']
+      this.props.handleChangeTodo(todo)
     }
   }
 
   handleChange(e) {
-    this.setState({todo: e.target.value})
+    let todo = this.props.todo
+    todo['title'] = e.target.value
+    this.props.handleChangeTodo(todo)
   }
 
   render() {
     return (
       <div>
-        <Input placeholder="Enter task..." value={this.state.todo} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
+        <Input placeholder="Enter a task..." value={this.props.todo.title} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
       </div>
     )
   }

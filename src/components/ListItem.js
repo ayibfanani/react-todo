@@ -22,10 +22,10 @@ const Column = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   padding: .75rem;
-`
 
-const TextRight = styled.div`
-  text-align: right;
+  ${({ type }) => type === 'narrow' && `
+    flex: none;
+  `}
 `
 
 const Button = styled.button`
@@ -52,23 +52,16 @@ const Button = styled.button`
 `
 
 class ListItem extends Component {
-  constructor(props) {
-    super(props)
-    
-    this.state = {
-      showDelete: false
-    }
-  }
-
   render() {
     return (
       <Item>
         <Columns>
           <Column>{this.props.children}</Column>
-          <Column>
-            <TextRight>
-              <Button onClick={() => this.props.removeTodo(this.props.k)}>Hapus</Button>
-            </TextRight>
+          <Column type="narrow">
+            <Button onClick={() => this.props.editTodo(this.props.k, this.props.todo)}>Ubah</Button>
+          </Column>
+          <Column type="narrow">
+            <Button onClick={() => this.props.removeTodo(this.props.k)}>Hapus</Button>
           </Column>
         </Columns>
       </Item>

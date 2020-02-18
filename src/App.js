@@ -14,6 +14,10 @@ class App extends Component {
     super(props)
 
     this.state = {
+      selected_todo: {
+        title: '',
+        status: 0
+      },
       todos: [
         { title: 'Task #1', status: 0 },
         { title: 'Task #2', status: 0 },
@@ -21,15 +25,45 @@ class App extends Component {
       ]
     }
     this.storeTodo = this.storeTodo.bind(this)
+    this.updateTodo = this.updateTodo.bind(this)
+    this.editTodo = this.editTodo.bind(this)
     this.removeTodo = this.removeTodo.bind(this)
+    this.handleChangeTodo = this.handleChangeTodo.bind(this)
+  }
+
+  handleChangeTodo(todo) {
+    this.setState({selected_todo: todo})
   }
 
   storeTodo(val) {
     this.setState({ todos: this.state.todos.concat(val) })
   }
 
+  editTodo(key, todo) {
+    todo['key'] = key
+    this.setState({ selected_todo: todo })
+  }
+
+  updateTodo(key, todo) {
+    let todos = this.state.todos.map((item, i) => {
+        if (i == key) {
+          return todo
+        }
+        
+        return item
+      });
+
+    this.setState({ 
+      todos, 
+      selected_todo: {
+        title: '',
+        status: 0
+      }
+    })
+  }
+
   removeTodo(index) {
-    this.setState({ todos: this.state.todos.filter((item, i) => i != index) })
+    this.setState({ todos: this.state.todos.filter((item, i) => i !== index) })
   }
 
   render() {
@@ -37,9 +71,9 @@ class App extends Component {
       <div className="App">
         <Title><strong>todos</strong></Title>
         <BoxWrapper>
-          <NewTodo storeTodo={this.storeTodo}></NewTodo>
+          <NewTodo todo={this.state.selected_todo} storeTodo={this.storeTodo} updateTodo={this.updateTodo} handleChangeTodo={this.handleChangeTodo}></NewTodo>
         </BoxWrapper>
-        <ListWrapper items={this.state.todos} removeTodo={this.removeTodo} />
+        <ListWrapper items={this.state.todos} editTodo={this.editTodo} removeTodo={this.removeTodo} />
       </div>
     )
   }
